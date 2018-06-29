@@ -1,0 +1,17 @@
+.App {
+  text-align: center;
+}
+.team {
+  width: 33%;
+  min-height: 116px;
+}
+.score {
+ padding-top: 35px;
+}
+.ant-collapse-item {
+  border: 0!important;
+}
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

@@ -16,7 +16,7 @@ const evaluation = {
       "defeat_rate": 0.2,
     }
     const weighting_average_victory = (h, v) => {
-      const rank = (v.rank - h.rank) / 32 * weighting.rank,
+      const rank =  (32 - h.rank) / 32 * v.rank / 32 * weighting.rank,
       goal_diff = h.goal_diff / (h.goal_diff + v.goal_diff) * weighting.goal_diff,
       score_goals = h.score_goals / (h.score_goals + v.score_goals) * weighting.score_goals,
       lose_goals = (1 - h.lose_goals / (h.lose_goals + v.lose_goals)) * weighting.lose_goals,

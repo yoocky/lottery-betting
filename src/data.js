@@ -16,23 +16,23 @@ const data = {
   "teams": [
     {
       "name": "德国",
-      "rank": 1,
+      "rank": 2,
+      "goal_diff": 1.4,
+      "score_goals": 4,
+      "lose_goals": 1.25,
+      "victory_rate": 0.9,
+      "defeat_rate": 0.0,
+      "draw_rate": 0.1,
+    },
+    {
+      "name": "法国",
+      "rank": 4,
       "goal_diff": 1.4,
       "score_goals": 1.6,
       "lose_goals": 1.25,
       "victory_rate": 0.5,
       "defeat_rate": 0.2,
       "draw_rate": 0.3,
-    },
-    {
-      "name": "法国",
-      "rank": 3,
-      "goal_diff": 1.1,
-      "score_goals": 1.5,
-      "lose_goals": 1.3,
-      "victory_rate": 0.5,
-      "defeat_rate": 0.3,
-      "draw_rate": 0.2,
     }
   ]
 }

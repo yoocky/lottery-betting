@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import { Card, Progress, Collapse, message, Modal, InputNumber, Table, Icon } from 'antd';
 import data from './data';
 import evaluation from './evaluation';
@@ -8,6 +7,13 @@ import './App.css';
 
 const {Panel} = Collapse;
 const {Grid} = Card;
+
+const mockConfig = {
+  fastForwardTimes : 60, // 时间进程加速倍数
+  goalDifficultyRate: 0.2 //进球难度系数
+
+}
+
 const randomCondition = {
   home: {
     luck: 2, // 运气值满分5颗星
@@ -45,7 +51,7 @@ class App extends Component {
       currentTime: 0,
       rate: {},
       odds: {},
-      goled: {
+      goal: {
         home: {
           count: 0,
           times: [],
@@ -82,23 +88,23 @@ class App extends Component {
   }
 
   mockGoleWithGod(time) {
-    const homeGoldRate = this.state.rate.victory * randomCondition.home.strength / 5;
-    const vistingGoldRate = this.state.rate.defeat * randomCondition.visiting.strength / 5;
+    const homeGoalRate = this.state.rate.victory * randomCondition.home.strength / 5;
+    const vistingGoalRate = this.state.rate.defeat * randomCondition.visiting.strength / 5;
     const homeGodRate = Math.random() * randomCondition.home.luck / 5;
     const vistingGodRate = Math.random() * randomCondition.visiting.luck / 5;
-    const homeRate = homeGoldRate * homeGodRate;
-    const visitingRate = vistingGoldRate * vistingGodRate;
+    const homeRate = homeGoalRate * homeGodRate;
+    const visitingRate = vistingGoalRate * vistingGodRate;
     let msg = '';
-    this.state.goled.home.rate = homeRate;
-    this.state.goled.visiting.rate = visitingRate;
-    if (Math.abs(homeRate - visitingRate) > 0.2) {
+    this.state.goal.home.rate = homeRate;
+    this.state.goal.visiting.rate = visitingRate;
+    if (Math.abs(homeRate - visitingRate) > mockConfig.goalDifficultyRate) {
       if (homeRate > visitingRate) {
-        this.state.goled.home.count++;
-        this.state.goled.home.times.push(time);
+        this.state.goal.home.count++;
+        this.state.goal.home.times.push(time);
         msg = `${this.state.home.name}队进球了`;
       } else {
-        this.state.goled.visiting.count++;
-        this.state.goled.visiting.times.push(time);
+        this.state.goal.visiting.count++;
+        this.state.goal.visiting.times.push(time);
         msg = `${this.state.visiting.name}队进球了`;
       }
     }
@@ -111,7 +117,7 @@ class App extends Component {
 
   lotteryDraw() {
     const result = {};
-    const goalDiff = this.state.goled.home.count - this.state.goled.visiting.count;
+    const goalDiff = this.state.goal.home.count - this.state.goal.visiting.count;
     if (goalDiff === 0) {
       result.vddValue = "draw";
       result.vddValueName = "平局";
@@ -140,7 +146,7 @@ class App extends Component {
       }
       this.forceUpdate()
     }
-    , 1000)
+    , 60000 / mockConfig.fastForwardTimes)
   }
   
   endMatch() {
@@ -219,10 +225,10 @@ class App extends Component {
                 <p> 负场率：{this.state.home.defeat_rate}</p>
               </Panel>
             </Collapse>
-            <Progress type="circle" percent={(this.state.goled.home.rate * 100).toFixed(2)}/>
+            <Progress type="circle" percent={(this.state.goal.home.rate * 100).toFixed(2)}/>
           </Grid>
           <Grid className="team score">
-            比分：{this.state.goled.home.count}:{this.state.goled.visiting.count}
+            比分：{this.state.goal.home.count}:{this.state.goal.visiting.count}
             <p>{this.state.status}{this.state.result.vddValueName}</p>
             {this.state.messages.map(item=> <p>{item}</p>)}
           </Grid>
@@ -238,7 +244,7 @@ class App extends Component {
                 <p> 负场率：{this.state.visiting.defeat_rate}</p>
               </Panel>
             </Collapse>
-            <Progress type="circle" percent={(this.state.goled.visiting.rate * 100).toFixed(2)}/>
+            <Progress type="circle" percent={(this.state.goal.visiting.rate * 100).toFixed(2)}/>
           </Grid>
           <Progress percent={this.state.currentTime * 100 / 90} format={() => `${this.state.currentTime}“`}/>
         </Card>

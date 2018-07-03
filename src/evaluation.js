@@ -1,11 +1,16 @@
+/** 
+ *  @author yoocky <mengyanzhou@gmail.com>
+ *  @description 初盘赔率的评价函数
+*/
 
 const evaluation = {
   /**
- * @description 球队综合能力评估，维度：净胜球	均得	均失 排名	胜场率	平场率	负场率 返回主队胜率和赔率
- * @param {object} h - 主队信息
- * @param {Object} v - 客队信息
- * @return {Object} 返回主队胜率和赔率
- */
+   * @method  
+   * @description 根据球队综合能力评估，维度：净胜球	均得	均失 排名	胜场率	平场率	负场率 返会胜负分玩法的赛果的概率和赔率
+   * @param {object} h - 主队信息
+   * @param {Object} v - 客队信息
+   * @return {Object} 返回主队胜率和赔率
+   */
   getVddRateOdds(h, v) {
     const weighting = {
       "rank": 0.2,

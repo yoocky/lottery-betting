@@ -1,3 +1,7 @@
+/** 
+ *  @author yoocky <mengyanzhou@gmail.com>
+ *  @description 随机两个球队，给出初盘赔率，模拟比赛和投注
+*/
 import React, { Component } from 'react';
 import { Card, Progress, Collapse, message, Modal, InputNumber, Table, Icon } from 'antd';
 import data from './data';
@@ -8,12 +12,14 @@ import './App.css';
 const {Panel} = Collapse;
 const {Grid} = Card;
 
+// 比赛模拟参数
 const mockConfig = {
   fastForwardTimes : 60, // 时间进程加速倍数
   goalDifficultyRate: 0.2 //进球难度系数
 
 }
 
+// 球队实力表现 
 const randomCondition = {
   home: {
     luck: 2, // 运气值满分5颗星
@@ -25,6 +31,7 @@ const randomCondition = {
   }
 }
 
+// 投注记录Table
 const betColumns = [{
   title: '投注内容',
   dataIndex: 'valueName',
@@ -46,16 +53,16 @@ class App extends Component {
     super();
     const teams = this.getRandomArrayElements(data.teams, 2);
     this.state = {
-      home: teams[0],
-      visiting: teams[1],
-      currentTime: 0,
-      rate: {},
-      odds: {},
-      goal: {
-        home: {
-          count: 0,
-          times: [],
-          rate: 0
+      home: teams[0],           // 主队数据
+      visiting: teams[1],       // 客队数据
+      currentTime: 0,           // 比赛进程分钟 上下半场90分钟
+      rate: {},                 // 胜平负赛果概率
+      odds: {},                 // 胜平负投注概率
+      goal: {                   // 进球信息
+        home: {                 // 主队进球
+          count: 0,             // 主队进球数
+          times: [],            // 进球时间节点
+          rate: 0               // 实时进球概率
         },
         visiting: {
           count: 0,
@@ -63,30 +70,46 @@ class App extends Component {
           rate: 0
         },
       },
-      messages: [],
-      showBetModal: false,
-      bet: {
-        type: "",
-        typeName:"",
-        value: "",
-        valueName: "",
-        amount: 2,
-        odds: 0,
-        status: "等待开奖"
+      messages: [],            // 进球历史消息
+      showBetModal: false,     // 投注框modal是否展示
+      bet: {                   // 投注订单信息
+        type: "",              // 玩法
+        typeName:"",           // 玩法名称
+        value: "",             // 投注内容
+        valueName: "",         // 投注内容名称
+        amount: 2,             // 投注倍数
+        odds: 0,               // 当前赔率
+        status: "等待开奖"      // 订单状态
       },
-      betList: [],
-      status: '未开赛',
-      result: {}
+      betList: [],             // 已投注订单列表
+      status: '未开赛',         // 比赛状态
+      result: {}               // 完赛赛果
     }
-    this.onChange = this.onChange.bind(this);
-    this.bet = this.bet.bind(this);
-  }
-  componentDidMount() {
-    const {rate, odds} = evaluation.getVddRateOdds(this.state.home, this.state.visiting);
-    this.setState({rate, odds})
-    this.startMatch();
   }
 
+  /** 
+   * @method
+   * @description 数组中随机取出n个值，并返回一个新的数据
+   * @param {array} arr - 原数组
+   * @param {number} count - 需要随机取出的个数
+   * @return {array} 随机生成的新数组
+   */
+  getRandomArrayElements(arr, count) {
+    let shuffled = arr.slice(0), i = arr.length, min = i - count, temp, index;
+    while (i-- > min) {
+        index = Math.floor((i + 1) * Math.random());
+        temp = shuffled[index];
+        shuffled[index] = shuffled[i];
+        shuffled[i] = temp;
+    }
+    return shuffled.slice(min);
+  }
+
+  /** 
+   * @method
+   * @description 双方进球能力的概率碰撞，根据进球难度系数检查是否会产生进球
+   * @param {number} time - 当前比赛进行时间
+  */
   mockGoleWithGod(time) {
     const homeGoalRate = this.state.rate.victory * randomCondition.home.strength / 5;
     const vistingGoalRate = this.state.rate.defeat * randomCondition.visiting.strength / 5;
@@ -115,6 +138,10 @@ class App extends Component {
     this.forceUpdate()
   }
 
+  /** 
+   * @method
+   * @description 完赛后根据赔率开奖
+  */
   lotteryDraw() {
     const result = {};
     const goalDiff = this.state.goal.home.count - this.state.goal.visiting.count;
@@ -135,6 +162,10 @@ class App extends Component {
     this.setState({result});
   }
 
+  /** 
+   * @method
+   * @description 模拟比赛开始
+  */
   startMatch() {
     const totalTimes = 90;
     this.setState({status: "进行中"});
@@ -149,28 +180,35 @@ class App extends Component {
     , 60000 / mockConfig.fastForwardTimes)
   }
   
+  /** 
+   * @method
+   * @description 模拟比赛完赛
+  */
   endMatch() {
     clearInterval(this.setInterval);
     this.setState({status: "已完赛"});
     this.lotteryDraw();
   }
 
-  // 投注
+  // 确认投注
   handleOk = (e) => {
     this.state.showBetModal = false;
     const bet = Object.assign({}, this.state.bet);
     this.state.betList.push(bet)
   }
 
-  onChange(value) {
+  // 改变投注倍数
+  onChange = (value) => {
     this.state.bet.amount = value;
   }
 
+  // 取消投注
   handleCancel = (e) => {
     this.state.showBetModal = false;
   }
   
-  bet(type, value) {
+  // 打开投注框
+  bet = (type, value) => {
     if (this.state.status === '已完赛') {
       message.info('投注已截止');
       return false;
@@ -198,17 +236,12 @@ class App extends Component {
     this.setState({bet, showBetModal: true});
   }
 
-  getRandomArrayElements(arr, count) {
-    let shuffled = arr.slice(0), i = arr.length, min = i - count, temp, index;
-    while (i-- > min) {
-        index = Math.floor((i + 1) * Math.random());
-        temp = shuffled[index];
-        shuffled[index] = shuffled[i];
-        shuffled[i] = temp;
-    }
-    return shuffled.slice(min);
+  componentDidMount() {
+    const {rate, odds} = evaluation.getVddRateOdds(this.state.home, this.state.visiting);
+    this.setState({rate, odds})
+    this.startMatch();
   }
-
+  
   render() {
     return (
       <div className="App">
@@ -268,7 +301,7 @@ class App extends Component {
         <Table 
           columns={betColumns} 
           dataSource={this.state.betList} 
-          size="small" 
+          size="small"
           locale={{emptyText: "暂无投注"}}
         />
       </div>

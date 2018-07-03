@@ -15,25 +15,36 @@
 const data = {
   "teams": [
     {
+      "name": "巴西",
+      "rank": 1,
+      "goal_diff": 1.7,
+      "score_goals": 1.7,
+      "lose_goals": 1.26,
+      "victory_rate": 0.6,
+      "defeat_rate": 0.3,
+      "draw_rate": 0.2,
+    },
+    {
       "name": "德国",
       "rank": 2,
-      "goal_diff": 1.4,
-      "score_goals": 4,
+      "goal_diff": 1.6,
+      "score_goals": 1.5,
       "lose_goals": 1.25,
-      "victory_rate": 0.9,
-      "defeat_rate": 0.0,
+      "victory_rate": 0.6,
+      "defeat_rate": 0.3,
       "draw_rate": 0.1,
     },
     {
       "name": "法国",
       "rank": 4,
-      "goal_diff": 1.4,
-      "score_goals": 1.6,
+      "goal_diff": 1.5,
+      "score_goals": 1.4,
       "lose_goals": 1.25,
       "victory_rate": 0.5,
-      "defeat_rate": 0.2,
-      "draw_rate": 0.3,
-    }
+      "defeat_rate": 0.3,
+      "draw_rate": 0.2,
+    },
+    
   ]
 }
 export default data;

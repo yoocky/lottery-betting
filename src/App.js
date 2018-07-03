@@ -26,7 +26,7 @@ const randomCondition = {
     strength: 4 // 现场实力表现
   },
   visiting: {
-    luck: 4, // 运气值满分5颗星
+    luck: 2, // 运气值满分5颗星
     strength: 4 // 现场实力表现
   }
 }
